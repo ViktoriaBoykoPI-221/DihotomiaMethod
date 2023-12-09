@@ -117,5 +117,142 @@ namespace DihotomiaMethod
                 MessageBox.Show("Ошибка: " + ex.Message);
             }
         }
+        public void GoldenSectionSearchMin(Func<double, double> f, double StartPoint, double EndPoint, double epsilon)
+        {
+            double x1, x2, k1, k2, F1, F2, Result;
+            int count = 0;
+            k2 = (Math.Sqrt(5) - 1) / 2;
+            k1 = 1 - k2;
+            x1 = StartPoint + k1 * (EndPoint - StartPoint);
+            x2 = StartPoint + k2 * (EndPoint - StartPoint);
+            try
+            {
+                F1 = Func(x1);
+                F2 = Func(x2);
+                while (true)
+                {
+                    ++count;
+                    if ((EndPoint - StartPoint) < epsilon)
+                    {
+                        Result = (StartPoint + EndPoint) / 2;
+                        textBox5.Text = Result.ToString();
+                        break;
+                    }
+                    else
+                    {
+                        if (F1 < F2)
+                        {
+                            EndPoint = x2;
+                            x2 = x1;
+                            F2 = F1;
+                            x1 = StartPoint + k1 * (EndPoint - StartPoint);
+                            F1 = Func(x1);
+                        }
+                        else
+                        {
+                            StartPoint = x1;
+                            x1 = x2;
+                            F2 = F1;
+                            x2 = StartPoint + k2 * (EndPoint - StartPoint);
+                            F2 = Func(x2);
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message);
+            }
+        }
+        public void GoldenSectionSearchMax(Func<double, double> f, double StartPoint, double EndPoint, double epsilon)
+        {
+            double x1, x2, k1, k2, F1, F2, Result;
+            int count = 0;
+            k2 = (Math.Sqrt(5) - 1) / 2;
+            k1 = 1 - k2;
+            x1 = StartPoint + k1 * (EndPoint - StartPoint);
+            x2 = StartPoint + k2 * (EndPoint - StartPoint);
+            try
+            {
+                F1 = Func(x1);
+                F2 = Func(x2);
+                while (true)
+                {
+                    ++count;
+                    if ((EndPoint - StartPoint) < epsilon)
+                    {
+                        Result = (StartPoint + EndPoint) / 2;
+                        textBox6.Text = Result.ToString();
+                        break;
+                    }
+                    else
+                    {
+                        if (F1 > F2)
+                        {
+                            EndPoint = x2;
+                            x2 = x1;
+                            F2 = F1;
+                            x1 = StartPoint + k1 * (EndPoint - StartPoint);
+                            F1 = Func(x1);
+                        }
+                        else
+                        {
+                            StartPoint = x1;
+                            x1 = x2;
+                            F2 = F1;
+                            x2 = StartPoint + k2 * (EndPoint - StartPoint);
+                            F2 = Func(x2);
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Windows.Forms.MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                double a, b, Xi;
+                if (!double.TryParse(textBox1.Text, out a) || !double.TryParse(textBox2.Text, out b) || !double.TryParse(textBox3.Text, out Xi))
+                {
+                    throw new ArgumentException("Некорректные значения входных данных");
+                }
+                if (a >= b)
+                {
+                    throw new ArgumentException("Некорректные границы интервала");
+                }
+                this.chart1.Series[0].Points.Clear();
+                this.chart1.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+                this.chart1.Series[0].MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
+                double x = a;
+                double y;
+                while (x <= b)
+                {
+                    y = Func(x);
+                    this.chart1.Series[0].Points.AddXY(x, y);
+                    x += 0.1;
+                }
+                this.chart1.Series[0].Color = Color.Red;
+                this.chart1.Series[0].BorderWidth = 2;
+
+                GoldenSectionSearchMax(Func, a, b, Xi);
+                GoldenSectionSearchMin(Func, a, b, Xi);
+               // double root = MethodOfNewton(a, b, Xi);
+               // textBox4.Text = root.ToString();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Ошибка: " + ex.Message);
+            }
+
+        }
+
     }
 }
+
