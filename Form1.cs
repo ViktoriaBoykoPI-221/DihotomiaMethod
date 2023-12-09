@@ -16,11 +16,12 @@ namespace DihotomiaMethod
         {
             InitializeComponent();
         }
-        double Func(double x)
+        double Func(double X)
         {
-            double function;
-            function = (27 - 18 * x + 2 * Math.Pow(x, 2)) * Math.Exp(-(x / 3));
-            return function;
+            org.matheval.Expression expression = new org.matheval.Expression(textBox7.Text.ToLower());
+            expression.Bind("x", X);
+            decimal value = expression.Eval<decimal>();
+            return (double)value;
         }
         private void button1_Click(object sender, EventArgs e)
         {
